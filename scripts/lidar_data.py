@@ -276,3 +276,12 @@ class DataFetcher():
         plt.ylabel('Latitude')
 
         return plt
+
+    # A function for a factor sampling of the point cloud data
+    def apply_factor_sampling(self, factor: int):
+        
+        self.sampler_class = CloudSubSampler(self.cloud_points)
+        self.cloud_points = self.sampler_class.get_factor_subsampling(
+            factor=factor)
+
+    
