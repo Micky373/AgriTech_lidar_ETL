@@ -284,4 +284,11 @@ class DataFetcher():
         self.cloud_points = self.sampler_class.get_factor_subsampling(
             factor=factor)
 
+    # A function for grid interpolating
+    def apply_grid_sampling(self, voxel_size: float, sampling_type: str = 'closest'):
+        
+        self.sampler_class = CloudSubSampler(self.cloud_points)
+        self.cloud_points = self.sampler_class.get_grid_subsampling(
+            voxel_size=voxel_size, sampling_type=sampling_type)
+
     
