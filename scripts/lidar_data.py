@@ -89,3 +89,42 @@ class DataFetcher():
 
         except Exception as e:
             sys.exit(1)
+
+    
+    # Given the polygon finding out the polygon edges 
+
+    def get_polygon_edges(self, polygon: Polygon, epsg: str) -> tuple:
+        
+        try:
+            grid = gpd.GeoDataFrame([polygon], columns=["geometry"])
+            grid.set_crs(epsg=epsg, inplace=True)
+
+            grid['geometry'] = grid.geometry.to_crs(epsg=3857)
+
+            minx, miny, maxx, maxy = grid.geometry[0].bounds
+            # bounds: ([minx, maxx], [miny, maxy])
+            self.extraction_bounds = f"({[minx, maxx]},{[miny,maxy]})"
+
+            # Cropping Bounds
+            self.polygon_cropping = self.get_crop_polygon(grid.geometry[0])
+
+            grid['geometry'] = grid.geometry.to_crs(epsg=epsg)
+            self.geo_df = grid
+
+            return minx, miny, maxx, maxy
+
+        except Exception as e:
+            sys.exit(1)
+
+    
+    # Creating the polygon crop for the pipeline croping function
+    
+    def get_crop_polygon(self, polygon: Polygon) -> str:
+        
+        polygon_cords = 'POLYGON(('
+        for i in list(polygon.exterior.coords):
+            polygon_cords += f'{i[0]} {i[1]},'
+
+        polygon_cords = polygon_cords[:-1] + '))'
+
+        return polygon_cords
