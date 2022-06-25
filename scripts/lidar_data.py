@@ -75,3 +75,18 @@ class DataFetcher():
                 return access_url
             else:
                 sys.exit()
+
+
+    def load_pipeline_template(self, file_name: str = './pipeline_template.json') -> None:
+        
+        try:
+            with open(file_name, 'r') as read_file:
+                template = load(read_file)
+
+            self.template_pipeline = template
+
+            logger.info('Successfully Loaded Pdal Pipeline Template')
+
+        except Exception as e:
+            logger.exception('Failed to Load Pdal Pipeline Template')
+            sys.exit(1)
