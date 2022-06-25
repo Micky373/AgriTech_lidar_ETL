@@ -118,7 +118,7 @@ class DataFetcher():
 
     
     # Creating the polygon crop for the pipeline croping function
-    
+
     def get_crop_polygon(self, polygon: Polygon) -> str:
         
         polygon_cords = 'POLYGON(('
@@ -128,3 +128,25 @@ class DataFetcher():
         polygon_cords = polygon_cords[:-1] + '))'
 
         return polygon_cords
+
+    # Modifies and creating the pipeline
+    def construct_simple_pipeline(self) -> None:
+
+        self.pipeline = []
+        reader = self.template_pipeline['reader']
+        reader['bounds'] = self.extraction_bounds
+        reader['filename'] = self.file_location
+        self.pipeline.append(reader)
+
+        cropper = self.template_pipeline['cropping_filter']
+        cropper['polygon'] = self.polygon_cropping
+        self.pipeline.append(cropper)
+
+        self.pipeline.append(self.template_pipeline['range_filter'])
+        self.pipeline.append(self.template_pipeline['assign_filter'])
+
+        reprojection = self.template_pipeline['reprojection_filter']
+        reprojection['out_srs'] = f"EPSG:{self.epsg}"
+        self.pipeline.append(reprojection)
+
+        self.pipeline = pdal.Pipeline(dumps(self.pipeline))
