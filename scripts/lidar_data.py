@@ -256,4 +256,23 @@ class DataFetcher():
 
         return plt
 
+    # A function to plot the terrain map
+    def get_terrain_map(self, markersize: int = 10, fig_size: Tuple[int, int] = (15, 20)):
         
+        self.get_elevation_geodf()
+
+        self.elevation_geodf.plot(c='elevation', scheme="quantiles", cmap='terrain', legend=True,
+                                  markersize=markersize,
+                                  figsize=(fig_size[0], fig_size[1]),
+                                  missing_kwds={
+                                    "color": "lightgrey",
+                                    "edgecolor": "red",
+                                    "hatch": "///",
+                                    "label": "Missing values"}
+                                  )
+
+        plt.title('Terrain Elevation Map')
+        plt.xlabel('Longitude')
+        plt.ylabel('Latitude')
+
+        return plt
