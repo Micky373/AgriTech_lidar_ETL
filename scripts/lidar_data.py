@@ -291,4 +291,8 @@ class DataFetcher():
         self.cloud_points = self.sampler_class.get_grid_subsampling(
             voxel_size=voxel_size, sampling_type=sampling_type)
 
-    
+    # A function for saving the point cloud data in the form of .xyz
+    def save_cloud_points_for_3d(self, filename: str):
+       
+        np.savetxt(filename + "_cloud_points.xyz",
+                   self.cloud_points, delimiter=";", fmt="%s")
