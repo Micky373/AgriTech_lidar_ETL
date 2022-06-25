@@ -56,7 +56,7 @@ class DataFetcher():
 
     def get_region_by_bounds(self, minx: float, miny: float, maxx: float, maxy: float, indx: int = 1):
 
-        aws_dataset_info_csv = pd.read_csv('./aws_dataset.csv')
+        aws_dataset_info_csv = pd.read_csv('../aws_dataset.csv')
         for index, bound in enumerate(aws_dataset_info_csv['Bound/s'].to_list()):
             bound = bound.strip('][').replace(
                 ']', '').replace('[', '').split(',')
