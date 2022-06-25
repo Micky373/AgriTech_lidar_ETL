@@ -166,7 +166,7 @@ class DataFetcher():
         reprojection['out_srs'] = f"EPSG:{self.epsg}"
         self.pipeline.append(reprojection)
 
-        # Simple Morphological Filter
+        # Filtering
         self.pipeline.append(self.template_pipeline['smr_filter'])
         self.pipeline.append(self.template_pipeline['smr_range_filter'])
 
@@ -182,3 +182,14 @@ class DataFetcher():
         self.pipeline.append(tif_writer)
 
         self.pipeline = pdal.Pipeline(dumps(self.pipeline))
+
+    # A function to get the data from the pipeline
+    def get_data(self):
+
+        try:
+            self.data_count = self.pipeline.execute()
+            self.create_cloud_points()
+            self.original_cloud_points = self.cloud_points
+            self.original_elevation_geodf = self.get_elevation_geodf()
+        except Exception as e:
+            sys.exit(1)
