@@ -1,4 +1,3 @@
-import logging
 from typing import Tuple
 import pdal
 from json import load, dumps
@@ -6,11 +5,9 @@ import sys
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from mpl_toolkits import mplot3d
 import geopandas as gpd
 from shapely.geometry import Polygon
 from shapely.geometry import Point
-from logger_creator import CreateLogger
 from subsampler import CloudSubSampler
 
 # A class that handles all the data fetching tasks
