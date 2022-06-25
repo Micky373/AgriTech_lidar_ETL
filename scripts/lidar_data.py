@@ -18,10 +18,11 @@ from subsampler import CloudSubSampler
 class DataFetcher():
     
     # Initializing the class by adding polygon CRS format and region
-    
+
     def __init__(self, polygon: Polygon, epsg: str, region: str = ''):
         try:
             self.data_location = "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/"
+            # Finding the polygon edges for bound
             minx, miny, maxx, maxy = self.get_polygon_edges(polygon, epsg)
 
             if(region != ''):
@@ -36,21 +37,13 @@ class DataFetcher():
 
         except Exception as e:
             sys.exit(1)
+        
+    
+    # Checking if the region exsits in the listed text file
 
     def check_region(self, region: str) -> str:
-        """Checks if a region provided is within the file name folders in the AWS dataset.
-
-        Parameters
-        ----------
-        region : str
-            Proabable file name of a folder in the AWS dataset
-
-        Returns
-        -------
-        str
-            Returns the same regions folder file name if it was successfully located
-        """
-        with open('./filename.txt', 'r') as locations:
+        
+        with open('../filename.txt', 'r') as locations:
             locations_list = locations.readlines()
 
         if(region in locations_list):
