@@ -41,7 +41,7 @@ class DataFetcher():
     
     # Checking if the region exsits in the listed text file
 
-    def check_region(self, region: str) -> str:
+    def check_region(self, region: str):
         
         with open('../filename.txt', 'r') as locations:
             locations_list = locations.readlines()
@@ -78,7 +78,7 @@ class DataFetcher():
 
 
     # Creating and loading a pipeline given a filename that is optional if not given we will pass our  template
-    def load_pipeline_template(self, file_name: str = '../pipeline_template.json') -> None:
+    def load_pipeline_template(self, file_name: str = '../pipeline_template.json'):
         
         try:
             with open(file_name, 'r') as read_file:
@@ -93,7 +93,7 @@ class DataFetcher():
     
     # Given the polygon finding out the polygon edges 
 
-    def get_polygon_edges(self, polygon: Polygon, epsg: str) -> tuple:
+    def get_polygon_edges(self, polygon: Polygon, epsg: str):
         
         try:
             grid = gpd.GeoDataFrame([polygon], columns=["geometry"])
@@ -119,7 +119,7 @@ class DataFetcher():
     
     # Creating the polygon crop for the pipeline croping function
 
-    def get_crop_polygon(self, polygon: Polygon) -> str:
+    def get_crop_polygon(self, polygon: Polygon):
         
         polygon_cords = 'POLYGON(('
         for i in list(polygon.exterior.coords):
@@ -130,7 +130,7 @@ class DataFetcher():
         return polygon_cords
 
     # Modifies and creating the pipeline
-    def construct_simple_pipeline(self) -> None:
+    def construct_simple_pipeline(self):
 
         self.pipeline = []
         reader = self.template_pipeline['reader']
@@ -216,7 +216,7 @@ class DataFetcher():
             sys.exit(1)
 
     # A function that returns a data frame of elevation and point clouds
-    def get_elevation_geodf(self) -> gpd.GeoDataFrame:
+    def get_elevation_geodf(self):
 
         elevation = gpd.GeoDataFrame()
         elevations = []
@@ -233,3 +233,27 @@ class DataFetcher():
         self.elevation_geodf = elevation
 
         return self.elevation_geodf
+
+    # A function to scatter plot from the dataframe passed
+    def get_scatter_plot(self, factor_value: int = 1, view_angle: Tuple[int, int] = (0, 0)):
+
+        values = self.cloud_points[::factor_value]
+
+        fig = plt.figure(figsize=(10, 15))
+
+        ax = plt.axes(projection='3d')
+
+        ax.scatter3D(values[:, 0], values[:, 1],
+                     values[:, 2], c=values[:, 2], s=0.1, cmap='terrain')
+
+        ax.set_xlabel('Longitude')
+        ax.set_ylabel('Latitude')
+        ax.set_zlabel('Elevation')
+
+        ax.set_title('Elevation Scatter Plot')
+
+        ax.view_init(view_angle[0], view_angle[1])
+
+        return plt
+
+        
