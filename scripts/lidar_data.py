@@ -193,3 +193,10 @@ class DataFetcher():
             self.original_elevation_geodf = self.get_elevation_geodf()
         except Exception as e:
             sys.exit(1)
+
+    # A function that will return the meta data after the pipe line has been run
+    def get_pipeline_metadata(self):
+        
+        return self.pipeline.metadata
+
+    
