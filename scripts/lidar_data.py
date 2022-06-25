@@ -199,4 +199,20 @@ class DataFetcher():
         
         return self.pipeline.metadata
 
+    # A function for getting the cloud points after the pipeline has been excuted
+    def create_cloud_points(self):
+
+        try:
+            cloud_points = []
+            for row in self.get_pipeline_arrays()[0]:
+                lst = row.tolist()[-3:]
+                cloud_points.append(lst)
+
+            cloud_points = np.array(cloud_points)
+
+            self.cloud_points = cloud_points
+
+        except:
+            sys.exit(1)
+
     
