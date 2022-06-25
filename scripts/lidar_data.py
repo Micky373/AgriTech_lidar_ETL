@@ -215,4 +215,21 @@ class DataFetcher():
         except:
             sys.exit(1)
 
-    
+    # A function that returns a data frame of elevation and point clouds
+    def get_elevation_geodf(self) -> gpd.GeoDataFrame:
+
+        elevation = gpd.GeoDataFrame()
+        elevations = []
+        points = []
+        for row in self.cloud_points:
+            elevations.append(row[2])
+            point = Point(row[0], row[1])
+            points.append(point)
+
+        elevation['elevation'] = elevations
+        elevation['geometry'] = points
+        elevation.set_crs(epsg=self.epsg, inplace=True)
+
+        self.elevation_geodf = elevation
+
+        return self.elevation_geodf
