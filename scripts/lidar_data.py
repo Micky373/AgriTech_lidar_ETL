@@ -150,3 +150,35 @@ class DataFetcher():
         self.pipeline.append(reprojection)
 
         self.pipeline = pdal.Pipeline(dumps(self.pipeline))
+
+    # A function to create a pipeline for tif data generation given a resolution and windowsize   
+    def construct_pipeline_template_tif(self, file_name: str, resolution: int = 1, window_size: int = 6, tif_values: list = ["all"]):
+        self.pipeline = []
+        reader = self.template_pipeline['reader']
+        reader['bounds'] = self.extraction_bounds
+        reader['filename'] = self.data_location + self.region + "/ept.json"
+        self.pipeline.append(reader)
+
+        self.pipeline.append(self.template_pipeline['range_filter'])
+        self.pipeline.append(self.template_pipeline['assign_filter'])
+
+        reprojection = self.template_pipeline['reprojection_filter']
+        reprojection['out_srs'] = f"EPSG:{self.epsg}"
+        self.pipeline.append(reprojection)
+
+        # Simple Morphological Filter
+        self.pipeline.append(self.template_pipeline['smr_filter'])
+        self.pipeline.append(self.template_pipeline['smr_range_filter'])
+
+        laz_writer = self.template_pipeline['laz_writer']
+        laz_writer['filename'] = f"{file_name}_{self.region}.laz"
+        self.pipeline.append(laz_writer)
+
+        tif_writer = self.template_pipeline['tif_writer']
+        tif_writer['filename'] = f"{file_name}_{self.region}.tif"
+        tif_writer['output_type'] = tif_values
+        tif_writer["resolution"] = resolution
+        tif_writer["window_size"] = window_size
+        self.pipeline.append(tif_writer)
+
+        self.pipeline = pdal.Pipeline(dumps(self.pipeline))
