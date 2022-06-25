@@ -49,5 +49,29 @@ class DataFetcher():
         if(region in locations_list):
             return region
         else:
-            logger.error('Region Not Available')
             sys.exit(1)
+
+    
+    # A function to get the region name given the bounds or polygon edges
+
+    def get_region_by_bounds(self, minx: float, miny: float, maxx: float, maxy: float, indx: int = 1):
+
+        aws_dataset_info_csv = pd.read_csv('./aws_dataset.csv')
+        for index, bound in enumerate(aws_dataset_info_csv['Bound/s'].to_list()):
+            bound = bound.strip('][').replace(
+                ']', '').replace('[', '').split(',')
+            bound = list(map(float, bound))
+
+            bminx, bminy, bmaxx, bmaxy = bound[0 * indx], bound[1 *
+                                                                indx], bound[3 * indx], bound[4 * indx]
+
+            if((minx >= bminx and maxx <= bmaxx) and (miny >= bminy and maxy <= bmaxy)):
+                access_url = aws_dataset_info_csv['Access Url/s'].to_list()[
+                    index][2:-2]
+
+                region = aws_dataset_info_csv['Region/s'].to_list()[
+                    index] + '_' + aws_dataset_info_csv['Year/s'].to_list()[index][2:-2]
+
+                return access_url
+            else:
+                sys.exit()
